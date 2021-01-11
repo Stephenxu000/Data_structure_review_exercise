@@ -2,3 +2,4 @@
 *.xmind
 *.exe
 *.cfg
+.vscode/*
