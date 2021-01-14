@@ -7,7 +7,7 @@ merge all overlapping intervals
 return an array of the non-overlapping intervals that cover all the intervals in the input.
 来源：力扣（LeetCode）
 */
-//runtime：464ms | 内存消耗 13.9MB
+//runtime：32ms | 内存消耗 14MB
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -15,27 +15,63 @@ class Solution
 {
 public:
     //先将二维数组按照左区间递增排序
-    void SelectSort(vector<vector<int>> &nums)
+    //分区操作
+    int partition(vector<vector<int>> &nums, int start, int end)
     {
-        int minindex;
-        for (int i = 0; i < nums.size(); i++)
+        int i = start, j = end, pivot = nums[start][0];
+        while (i < j)
         {
-            minindex = i;
-            for (int j = i + 1; j < nums.size(); j++)
+            while (nums[i][0] <= pivot && i < j)
             {
-                if (nums[j][0] < nums[minindex][0])
+                i++;
+            }
+            while (nums[j][0] > pivot)
+            {
+                j--;
+            }
+            if (i < j && nums[i][0] > nums[j][0])
+            {
+                swap(nums[i], nums[j]);
+            }
+        }
+        swap(nums[j], nums[start]);
+        return j;
+    }
+    void QSort(vector<vector<int>> &nums)
+    {
+        //1.堆栈初始化
+        stack<int> s;
+        //2.快排数据初始
+        int start = 0, end = nums.size() - 1, pivot;
+        s.push(end);
+        s.push(start);
+        while (!s.empty())
+        {
+            start = s.top();
+            s.pop();
+            end = s.top();
+            s.pop();
+            if (start < end)
+            {
+                pivot = partition(nums, start, end);
+                if (start < pivot)
                 {
-                    minindex = j;
+                    s.push(pivot - 1);
+                    s.push(start);
+                }
+                if (pivot < end)
+                {
+                    s.push(end);
+                    s.push(pivot + 1);
                 }
             }
-            swap(nums[minindex], nums[i]);
         }
     }
     vector<vector<int>> merge(vector<vector<int>> &intervals)
     {
-        if (intervals.size() <= 1)//若区间数组只有一个或没有区间，直接返回区间数组。
+        if (intervals.size() <= 1)
             return intervals;
-        SelectSort(intervals);
+        QSort(intervals);
         vector<vector<int>> ans;
         for (int i = 0; i < intervals.size() - 1; i++)
         {
