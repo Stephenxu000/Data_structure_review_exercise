@@ -4,7 +4,6 @@ https://leetcode-cn.com/problems/insertion-sort-list/
 Sort a linked list using insertion sort.
 来源：力扣（LeetCode）
 */
-//Definition for singly-linked list.
 #include <iostream>
 using namespace std;
 struct ListNode
